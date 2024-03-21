@@ -1,11 +1,33 @@
 import React from "react";
-import { useParams } from "react-router-dom";
-import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { createBlog, editBlog, fetchBlog } from "../actions/blogActions";
+import { useDispatch, useSelector } from "react-redux";
 function BlogEdit() {
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const [blog, setBlog] = useState({ title: "", content: "" });
   const [message, setMessage] = useState("");
   const [isError, setIsError] = useState(false);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchBlog(id));
+    }
+  }, [id, dispatch]);
+
+  const currentBlog = useSelector((state) => state.blog.currentBlog);
+
+  useEffect(() => {
+    if (id) {
+      if (currentBlog) {
+        setBlog(currentBlog);
+      }
+    }
+  }, [currentBlog]);
+
   const handleChange = (e) => {
     setBlog({ ...blog, [e.target.name]: e.target.value });
   };
@@ -13,8 +35,18 @@ function BlogEdit() {
   const handleSave = async () => {
     if (id) {
       // update
+      const response = await dispatch(editBlog(blog));
+      if (response.success) {
+        alert("Edit blog successfully");
+        navigate("/");
+      }
     } else {
       // create
+      const response = await dispatch(createBlog(blog));
+      if (response.success) {
+        alert("Create blog successfully");
+        navigate("/");
+      }
     }
   };
   return (
