@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteBlog, fetchBlogs } from "../actions/blogActions";
+import { deleteBlog, fetchBlogs } from "../slices/blogSlice";
 
 function BlogList() {
   const dispatch = useDispatch();
@@ -31,7 +31,7 @@ function BlogList() {
             <div>
               <button
                 onClick={() => {
-                  if (confirm("Delete blog")) {
+                  if (confirm("Delete blog?")) {
                     dispatch(deleteBlog(blog.id));
                   }
                 }}
